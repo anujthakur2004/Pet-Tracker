@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+{% load static %}
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Pet Activity Tracker</title>
+  <link rel="stylesheet" href="{% static 'tracker/style.css' %}">
+</head>
+<body>
+  <main class="container">
+    <h1>Today’s Summary</h1>
+    <p>Walk: {{ summary.walk_minutes }} min • Meals: {{ summary.meals }} • Meds: {{ summary.meds }}</p>
+    <ul>
+      {% for a in todays %}
+        <li>{{ a.pet }} — {{ a.type }} ({{ a.amount }}) at {{ a.datetime }}</li>
+      {% empty %}
+        <li>No entries yet today.</li>
+      {% endfor %}
+    </ul>
+    <p><a href="{% url 'index' %}">← Back</a></p>
+  </main>
+</body>
+</html>

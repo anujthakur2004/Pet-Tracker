@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+{% load static %}
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Pet Activity Tracker</title>
+  <link rel="stylesheet" href="{% static 'tracker/style.css' %}">
+</head>
+<body>
+  <main class="container">
+    <header class="hero">
+      <h1>🐾 Pet Activity Tracker</h1>
+    </header>
+
+    {% if errors %}
+      <div class="alert error">
+        <ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul>
+      </div>
+    {% endif %}
+    {% if success %}
+      <div class="alert success">{{ success }}</div>
+    {% endif %}
+
+    <section class="card">
+      <h2>Log Activity</h2>
+      <form method="post" id="logForm" novalidate>
+        {% csrf_token %}
+        <label>Pet name
+          <input name="pet" placeholder="Rex" required>
+        </label>
+        <label>Activity type
+          <select name="type" required>
+            <option value="">Select…</option>
+            <option value="walk">Walk</option>
+            <option value="meal">Meal</option>
+            <option value="medication">Medication</option>
+          </select>
+        </label>
+        <label>Duration / quantity
+          <input type="number" name="amount" min="1" step="1" required>
+        </label>
+        <label>Date & time
+          <input type="datetime-local" name="datetime">
+        </label>
+        <button type="submit" class="btn">Save</button>
+      </form>
+    </section>
+
+    <section class="card">
+  <h2>Today's Summary</h2>
+  <div class="stats">
+    <div class="stat">
+      <div class="label">Walk time</div>
+      <div class="value">{{ summary.walk_minutes }} min</div>
+      <div class="bar"><div class="bar-fill" data-value="{{ summary.walk_minutes }}"></div></div>
+    </div>
+    <div class="stat">
+      <div class="label">Meals</div>
+      <div class="value">{{ summary.meals }}</div>
+      <div class="bar"><div class="bar-fill" data-value="{{ summary.meals }}"></div></div>
+    </div>
+    <div class="stat">
+      <div class="label">Medications</div>
+      <div class="value">{{ summary.meds }}</div>
+      <div class="bar"><div class="bar-fill" data-value="{{ summary.meds }}"></div></div>
+    </div>
+  </div>
+  <details>
+    <summary>Show entries</summary>
+    <ul>
+      {% for a in todays %}
+        <li><strong>{{ a.pet }}</strong> – {{ a.type }} ({{ a.amount }}) at {{ a.datetime }}</li>
+      {% empty %}
+        <li>No activities yet today.</li>
+      {% endfor %}
+    </ul>
+  </details>
+</section>
+
+
+    <section class="card">
+      <h2>Chatbot</h2>
+      <div id="chatLog" class="chat-log">
+        <div class="msg bot">Hi! I'm your pet assistant 🐶. Ask me about walks, meals, or meds!</div>
+      </div>
+      <form id="chatForm">
+        <input id="chatInput" placeholder="Type a message..." required>
+        <button class="btn" type="submit">Send</button>
+      </form>
+    </section>
+
+    <div id="reminder" class="reminder hidden">Rex still needs exercise today!</div>
+  </main>
+
+  <script src="{% static 'tracker/script.js' %}"></script>
+</body>
+</html>
